@@ -1,0 +1,6 @@
+{
+  "*.ts": [
+    "prettier --write \"**/*.ts\"",
+    "eslint \"**/*.ts\" --quiet --fix"
+  ]
+}

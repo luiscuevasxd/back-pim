@@ -1,0 +1,65 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo -e "\033[0;32mProduct Stock! 🚀\033[0m"
+echo -e "\033[0;34mValidating changes... \033[0m"
+
+## Analitics files
+echo -e "\033[0;32mExecuting analitics files ✅\033[0m"
+filesString=$(git diff --name-only --cached)
+
+files=(`echo $filesString | tr ' ' ' '`)
+filterFiles=()
+
+for file in "${files[@]}"
+do
+  nameFolderAndSlash=$(echo "$file" | awk -F '/' '{print "/"$2}')
+  nameFolder=$(echo "$nameFolderAndSlash" | sed 's/\///g')
+  fileExists=false
+
+  for filterFile in "${filterFiles[@]}"
+  do
+    if [ "$filterFile" == "$nameFolder" ]
+    then
+      fileExists=true
+    fi
+  done
+
+  if echo "$file" | grep -q "src/" && [ "$fileExists" = false ]; then
+    filterFiles+=("$nameFolder");
+  fi
+done
+## End analitics files
+
+## Commit msg
+echo -e "\033[0;32mEvaluating conventional commit ✅\033[0m"
+yarn commitlint --edit $1
+## End commit msg
+
+
+back=$(yarn lint-staged)
+
+back_result="'$back'"
+staged_files='No staged files'
+
+if [[ "$back_result" == *"$staged_files"* ]]; then
+  echo -e "\033[0;32mNo changes in code ✅\033[0m"
+else
+  echo -e "\033[0;34mBuilding... \033[0m"
+  yarn build:pre-commit > /dev/null
+  echo -e "\033[0;32mBuild succesfully ✅\033[0m"
+fi
+
+## Testing files
+for filterFile in "${filterFiles[@]}"
+do
+  folderTest="__test__/$filterFile"
+  
+  if [ -d "$folderTest" ]; then
+    echo -e "\033[0;32mExecuting testing folder:$filterFile ✅\033[0m"
+    yarn test --testPathPattern="$folderTest"
+  fi
+done
+## End testing files
+
+echo -e "\033[0;32mHappy Coding 🎉\033[0m"

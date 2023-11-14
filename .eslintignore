@@ -1,0 +1,15 @@
+jest.config.ts
+node_modules
+node_modules/**
+scripts
+tsconfig.json
+build
+layers
+.vscode
+events
+lib
+tsup.config.ts
+function-debugger.js
+function-debugger.ts
+package-lock.json
+__test__/**/**

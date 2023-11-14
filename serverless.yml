@@ -1,0 +1,55 @@
+service: pim-backend
+
+custom:
+  profile: ''
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: ${opt:stage,'dev'}
+  timeout: 30
+  apiGateway:
+    minimumCompressionSize: 1024
+    shouldStartNameWithService: true
+  environment:
+    STAGE: ${self:provider.stage}
+    AWS_PROFILE: ${self:custom.profile}
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+    NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000'
+
+plugins:
+  - serverless-esbuild
+
+functions:
+  pim:
+    handler: src/pim/index.handler
+    events:
+      - http:
+          path: /products
+          method: GET
+          cors: true
+      - http:
+          path: /products/{id}
+          method: GET
+          cors: true
+      - http:
+          path: /products
+          method: POST
+          cors: true
+      - http:
+          path: /products/{id}
+          method: PATCH
+          cors: true
+      - http:
+          path: /products/{id}
+          method: DELETE
+          cors: true
+      - http:
+          path: /products/change-stock/{id}
+          method: POST
+          cors: true
+      - http:
+          path: /products/{id}/stocks
+          method: GET
+          cors: true

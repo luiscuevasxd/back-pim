@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@pim/infrastructure/*": ["src/pim/infrastructure/*"],
+      "@pim/core/*": ["src/pim/core/*"]
+    }
+  }
+}

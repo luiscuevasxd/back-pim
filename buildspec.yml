@@ -1,0 +1,25 @@
+version: 0.2
+run-as: root
+
+env:
+  parameter-store:
+    CODEBUILD_GH_TOKEN: /CodeBuild/GH_TOKEN
+    CODEBUILD_ACCESS_KEY: /CodeBuild/ACCESS_KEY
+    CODEBUILD_SECRET_ACCESS_KEY: /CodeBuild/SECRET_ACCESS_KEY
+    CODEBUILD_AWS_PROFILE: /CodeBuild/AWS_PROFILE
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 16
+    commands:
+      - npm install -g serverless
+      - npm install -g yarn
+      - yarn install
+  build:
+    commands:
+      - serverless config credentials --provider aws --key $CODEBUILD_ACCESS_KEY --secret $CODEBUILD_SECRET_ACCESS_KEY --profile $AWS_PROFILE
+      - serverless deploy --stage $STAGE --aws-profile $AWS_PROFILE
+cache:
+  paths:
+    - node_modules

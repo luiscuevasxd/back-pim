@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo -e "\033[0;32mProduct Stock! 🚀\033[0m"
+echo -e "\033[0;32mBe-flow backend sap TS! 🚀\033[0m"
 echo -e "\033[0;34mValidating changes... \033[0m"
 
 ## Analitics files
@@ -36,19 +36,38 @@ echo -e "\033[0;32mEvaluating conventional commit ✅\033[0m"
 yarn commitlint --edit $1
 ## End commit msg
 
-
-back=$(yarn lint-staged)
-
-back_result="'$back'"
+lint_staged=$(yarn lint-staged)
+lint_staged_result="'$lint_staged'"
 staged_files='No staged files'
 
-if [[ "$back_result" == *"$staged_files"* ]]; then
+if [[ "$lint_staged_result" == *"$staged_files"* ]]; then
   echo -e "\033[0;32mNo changes in code ✅\033[0m"
-else
-  echo -e "\033[0;34mBuilding... \033[0m"
-  yarn build:pre-commit > /dev/null
-  echo -e "\033[0;32mBuild succesfully ✅\033[0m"
+  exit
 fi
+
+format=$(yarn format)
+format_result="'$format'"
+
+echo -e "\033[0;32mFormat...\033[0m"
+if [[ $format_result == *"Done"* ]]; then
+  echo -e "\033[0;32mFormatting successfully ✅\033[0m"
+else
+  echo "Formatting errors: '$format'"
+fi
+
+lint=$(yarn lint)
+lint_result="'$lint'"
+
+echo -e "\033[0;32mEslint...\033[0m"
+if [[ $lint_result == *"Done"* ]]; then
+  echo -e "\033[0;32mEslint successfully ✅\033[0m"
+else
+  echo "Eslint errors: '$lint'"
+fi
+
+echo -e "\033[0;34mBuilding... \033[0m"
+yarn build:pre-commit > /dev/null
+echo -e "\033[0;32mBuild succesfully ✅\033[0m"
 
 ## Testing files
 for filterFile in "${filterFiles[@]}"

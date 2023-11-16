@@ -4,6 +4,7 @@
   "description": "ts",
   "private": "true",
   "scripts": {
+    "install": "husky install",
     "build": "yarn format && yarn lint && tsc --noEmit && tsup",
     "build:pre-commit": "tsc --noEmit && tsup",
     "lint": "eslint \"**/*.{ts, tsx}\" --quiet --fix",

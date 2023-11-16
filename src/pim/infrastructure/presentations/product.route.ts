@@ -50,7 +50,7 @@ export default function productRoutes(
       productController.changeStatus(req, reply)
   });
 
-  fastify.get('/statistics', {
+  fastify.get('/statistics/all', {
     handler: () => productController.statistics()
   });
 

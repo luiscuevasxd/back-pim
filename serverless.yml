@@ -1,7 +1,8 @@
 service: pim-backend
 
 custom:
-  profile: ''
+  profile: ${opt:profile,'personal'}
+  DATABASE_URL: ${ssm:/DATABASE_URL}
 
 provider:
   name: aws
@@ -15,6 +16,7 @@ provider:
   environment:
     STAGE: ${self:provider.stage}
     AWS_PROFILE: ${self:custom.profile}
+    DATABASE_URL: ${self:custom.DATABASE_URL}
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
     NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000'
 
@@ -28,7 +30,6 @@ functions:
       - http:
           path: /products
           method: GET
-          cors: true
       - http:
           path: /products/{id}
           method: GET
@@ -51,5 +52,9 @@ functions:
           cors: true
       - http:
           path: /products/{id}/stocks
+          method: GET
+          cors: true
+      - http:
+          path: /products/statistics/all
           method: GET
           cors: true
